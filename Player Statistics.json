@@ -1,0 +1,1739 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_MYSQL",
+      "label": "MySQL",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mysql",
+      "pluginName": "MySQL"
+    },
+    {
+      "name": "DS_EXPRESSION",
+      "label": "Expression",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "__expr__"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "datasource",
+      "id": "__expr__",
+      "version": "1.0.0"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.4.7"
+    },
+    {
+      "type": "datasource",
+      "id": "mysql",
+      "name": "MySQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 29,
+      "panels": [],
+      "title": "Standard Stats",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select lastName as 'Player Name', steamID as 'Steam ID'\nfrom DBLog_SteamUsers\nwhere steamID = $PLAYERID ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Player ID",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 20,
+        "x": 4,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "select count(*) as Incaps\n              from DBLog_Wounds\n                       join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\n              where attacker = $PLAYERID\n                and victim != $PLAYERID\n                and teamkill = 0\n                and DBLog_Wounds.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}",
+          "refId": "Incaps",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "select count(*) as Kills\n              from DBLog_Deaths\n                       join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\n              where attacker = $PLAYERID\n                and victim != $PLAYERID\n                and teamkill = 0\n                and DBLog_Deaths.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}",
+          "refId": "Kills",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "select count(*) as Fallen\n              from DBLog_Wounds\n                       join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\n              where victim = $PLAYERID\n                and attacker != $PLAYERID\n                and teamkill = 0\n                and DBLog_Wounds.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}",
+          "refId": "Fallen",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "select count(*) as Deaths\n              from DBLog_Deaths\n                       join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\n              where victim = $PLAYERID\n                and attacker != $PLAYERID\n                and teamkill = 0\n                and DBLog_Deaths.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}",
+          "refId": "Deaths",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "$Incaps/$Fallen",
+          "hide": false,
+          "refId": "IPF",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "$Incaps/$Deaths",
+          "hide": false,
+          "refId": "IPD",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "$Kills/$Deaths",
+          "hide": false,
+          "refId": "KDR",
+          "type": "math"
+        }
+      ],
+      "title": "Kills and Deaths",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 4,
+        "x": 0,
+        "y": 5
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Incaps$/",
+          "limit": 25,
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select weapon as 'Weapon', count(*) as 'Incaps'\nfrom DBLog_Wounds join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\nwhere attacker = $PLAYERID\n  and teamkill = 0\n  and DBLog_Wounds.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by weapon\norder by Incaps desc",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Weapon Usage (Incaps) (Top 25)",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 4,
+        "y": 5
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select incaps/matches as 'Incaps', kills/matches as 'Kills', downed/matches as 'Fallen', deaths/matches as 'Deaths'\nfrom (select lastname,\n             steamID,\n             (select count(*)\n              from DBLog_Wounds\n                       join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\n              where attacker = $PLAYERID\n                and victim != $PLAYERID\n                and teamkill = 0\n                and DBLog_Wounds.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as incaps,\n             (select count(*)\n              from DBLog_Deaths\n                       join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\n              where attacker = $PLAYERID\n                and victim != $PLAYERID\n                and teamkill = 0\n                and DBLog_Deaths.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as kills,\n             (select count(*)\n              from DBLog_Wounds\n                       join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\n              where victim = $PLAYERID\n                and attacker != $PLAYERID\n                and teamkill = 0\n                and DBLog_Wounds.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as downed,\n             (select count(*)\n              from DBLog_Deaths\n                       join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\n              where victim = $PLAYERID\n                and attacker != $PLAYERID\n                and teamkill = 0\n                and DBLog_Deaths.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as deaths,\n            (select count(*)\n           from (select D.id\n           from DBLog_Wounds join DBLog_Matches D on DBLog_Wounds.`match` = D.id\n           where (victim = $PLAYERID or attacker = $PLAYERID)\n           and D.server != 3\n           and map != 'Jensen\\'s'\n           ${seed:value}\n           group by D.id) as matches\n           ) as matches\n      from DBLog_SteamUsers\n      where steamID = $PLAYERID\n      ) as psr",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Kills and Deaths per Match",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 100
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 5
+      },
+      "id": 19,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "select count(*) as Matches\n           from (select D.id\n           from DBLog_Wounds join DBLog_Matches D on DBLog_Wounds.`match` = D.id\n           where (victim = $PLAYERID or attacker = $PLAYERID)\n           and D.server != 3\n           and map != 'Jensen\\'s'\n           ${seed:value}\n           group by D.id) as matches",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select sum(time_to_sec(timediff(ifnull(endTime,now()),startTime))/3600) as 'Total Hours'\nfrom DBLog_PlayerTimes\nwhere server != 3 \n  and player = $PLAYERID\nlimit 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "$A/$B",
+          "hide": false,
+          "refId": "HPM",
+          "type": "math"
+        }
+      ],
+      "title": "Amount Played",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 18,
+        "x": 4,
+        "y": 9
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select revives as 'Revives', revived as 'Revived', (revives/deaths) as 'Revives per Death', (revived/deaths) as 'Revived per Death', revives/matches as 'Revives per Match', revived/matches as 'Revived per Match'\nfrom (select lastname,\n             steamID,\n             (select count(*)\n              from DBLog_Revives join DBLog_Matches DLM on DBLog_Revives.`match` = DLM.id\n              where reviver = $PLAYERID\n                and teamkill = 0\n                and DLM.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as revives,\n             (select count(*)\n              from DBLog_Revives join DBLog_Matches DLM on DBLog_Revives.`match` = DLM.id\n              where victim = $PLAYERID\n                and teamkill = 0\n                and DLM.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as revived,\n             (select count(*)\n              from DBLog_Deaths\n                       join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\n              where victim = $PLAYERID\n                and attacker != $PLAYERID\n                and teamkill = 0\n                and DBLog_Deaths.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as deaths,\n            (select count(*)\n           from (select D.id\n           from DBLog_Wounds join DBLog_Matches D on DBLog_Wounds.`match` = D.id\n           where (victim = 76561198221715432 or attacker = 76561198221715432)\n           and D.server != 3\n           and map != 'Jensen\\'s'\n           ${seed:value}\n           group by D.id) as matches\n           ) as matches\n      from DBLog_SteamUsers\n      where steamID = $PLAYERID\n      ) as psr",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Revives and Deaths",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 18,
+        "x": 4,
+        "y": 13
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select tks as 'TKs', tked as 'TKed', (tks/deaths) as 'TKs per Death', (tked/deaths) as 'TKed per Death', tks/matches as 'TKs per Match', tked/matches as 'TKed per Match'\nfrom (select lastname,\n             steamID,\n             (select count(*)\n              from DBLog_Wounds join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\n              where attacker = $PLAYERID\n                and victim != $PLAYERID\n                and teamkill = 1\n                and DLM.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as tks,\n             (select count(*)\n              from DBLog_Wounds join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\n              where victim = $PLAYERID\n                and attacker != $PLAYERID\n                and teamkill = 1\n                and DLM.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as tked,\n             (select count(*)\n              from DBLog_Deaths\n                       join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\n              where victim = $PLAYERID\n                and teamkill = 0\n                and DBLog_Deaths.server != 3\n                and map != 'Jensen\\'s'\n                ${seed:value}) as deaths,\n            (select count(*)\n           from (select D.id\n           from DBLog_Wounds join DBLog_Matches D on DBLog_Wounds.`match` = D.id\n           where (victim = 76561198221715432 or attacker = 76561198221715432)\n           and D.server != 3\n           and map != 'Jensen\\'s'\n           ${seed:value}\n           group by D.id) as matches\n           ) as matches\n      from DBLog_SteamUsers\n      where steamID = $PLAYERID\n      ) as psr",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "TKs",
+      "type": "stat"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 23,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 0,
+            "y": 2
+          },
+          "id": 12,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select victimName as 'Player', count(*) as 'Incaps'\nfrom DBLog_Wounds join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\nwhere attacker = $PLAYERID \n  and victim is not null\n  and victim != $PLAYERID \n  and teamkill = 0\n  and DBLog_Wounds.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by victim\norder by Incaps desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Incaps (Top 25)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 4,
+            "y": 2
+          },
+          "id": 13,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select victimName as 'Player', count(*) as 'Kills'\nfrom DBLog_Deaths join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\nwhere attacker = $PLAYERID\n  and victim is not null\n  and victim != $PLAYERID\n  and teamkill = 0\n  and DLM.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by victim\norder by Kills desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Kills (Top 25)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 8,
+            "y": 2
+          },
+          "id": 14,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select attackerName as 'Player', count(*) as 'Fallen'\nfrom DBLog_Wounds join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\nwhere victim = $PLAYERID\n  and attacker != $PLAYERID\n  and teamkill = 0\n  and DLM.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by attacker\norder by Fallen desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Fallen (Top 25)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 12,
+            "y": 2
+          },
+          "id": 15,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select attackerName as 'Player', count(*) as 'Kills'\nfrom DBLog_Deaths join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\nwhere victim = $PLAYERID\n  and attacker != $PLAYERID\n  and teamkill = 0\n  and DLM.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by attacker\norder by Kills desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Deaths (Top 25)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 0,
+            "y": 11
+          },
+          "id": 24,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select victimName as 'Player', count(*) as 'Revives'\nfrom DBLog_Revives join DBLog_Matches DLM on DBLog_Revives.`match` = DLM.id\nwhere victim != $PLAYERID \n  and reviver = $PLAYERID \n  and teamkill != 1\n  and DLM.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by victim\norder by Revives desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Revives (Top 25)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 4,
+            "y": 11
+          },
+          "id": 25,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select reviverName as 'Player', count(*) as 'Revived'\nfrom DBLog_Revives join DBLog_Matches DLM on DBLog_Revives.`match` = DLM.id\nwhere victim = $PLAYERID \n  and reviver != $PLAYERID \n  and teamkill != 1\n  and DLM.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by reviver\norder by Revived desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Revived (Top 25)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 8,
+            "y": 11
+          },
+          "id": 17,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select victimName as 'Player', count(*) as 'TKs'\nfrom DBLog_Wounds join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\nwhere victim != $PLAYERID \n  and attacker = $PLAYERID \n  and teamkill = 1\n  and DLM.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by victim\norder by TKs desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "TKs (Top 25)",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 12,
+            "y": 11
+          },
+          "id": 16,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "mysql",
+                "uid": "${DS_MYSQL}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "select attackerName as 'Player', count(*) as 'TKed'\nfrom DBLog_Wounds join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\nwhere victim = $PLAYERID \n  and attacker != $PLAYERID \n  and teamkill = 1\n  and DLM.server != 3\n  and map != 'Jensen\\'s'\n  ${seed:value}\ngroup by attacker\norder by TKed desc",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "TKed (Top 25)",
+          "type": "piechart"
+        }
+      ],
+      "title": "Pie Charts",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 31,
+      "panels": [],
+      "title": "Time Graphs",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MYSQL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 1
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 2
+              },
+              {
+                "color": "green",
+                "value": 3
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kills"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "deaths"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "id": 27,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select time, kills/deaths as KDR\nfrom (\nselect time, sum(deaths) over (order by time) as deaths, sum(kills) over (order by time) as kills\nfrom\n(select DBLog_Deaths.time,\n        if(victim = $PLAYERID, 1, 0)   as deaths,\n        if(attacker = $PLAYERID, 1, 0) as kills\n from DBLog_Deaths\n          join DBLog_Matches DLM on DBLog_Deaths.`match` = DLM.id\n where ((attacker != $PLAYERID \n     and victim = $PLAYERID) or\n        (attacker = $PLAYERID \n            and victim != $PLAYERID))\n   and teamkill = 0\n   and DBLog_Deaths.server != 3\n   and map != 'Jensen\\'s') as kdtime) as kdsum",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MYSQL}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "select time, kills/deaths as IPF\nfrom (\nselect time, sum(deaths) over (order by time) as deaths, sum(kills) over (order by time) as kills\nfrom\n(select DBLog_Wounds.time,\n        if(victim = $PLAYERID, 1, 0)   as deaths,\n        if(attacker = $PLAYERID, 1, 0) as kills\n from DBLog_Wounds\n          join DBLog_Matches DLM on DBLog_Wounds.`match` = DLM.id\n where ((attacker != $PLAYERID \n     and victim = $PLAYERID) or\n        (attacker = $PLAYERID \n            and victim != $PLAYERID))\n   and teamkill = 0\n   and DBLog_Wounds.server != 3\n   and map != 'Jensen\\'s') as kdtime) as kdsum",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "KDR / IPF",
+      "transformations": [],
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "revision": 1,
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "mysql",
+          "uid": "${DS_MYSQL}"
+        },
+        "definition": "select steamID as __value, lastName as __text\nfrom DBLog_SteamUsers",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Player Name",
+        "multi": false,
+        "name": "PLAYERID",
+        "options": [],
+        "query": "select steamID as __value, lastName as __text\nfrom DBLog_SteamUsers",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "no",
+          "value": "and layerClassname not regexp '_Seed_'"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Include Seeding",
+        "multi": false,
+        "name": "seed",
+        "options": [
+          {
+            "selected": true,
+            "text": "no",
+            "value": "and layerClassname not regexp '_Seed_'"
+          },
+          {
+            "selected": false,
+            "text": "yes",
+            "value": "and layerClassname is not null"
+          }
+        ],
+        "query": "no : and layerClassname not regexp '_Seed_', yes : and layerClassname is not null",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-90d",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": false
+  },
+  "timezone": "",
+  "title": "Player Statistics",
+  "uid": "TzfIX4Y4z",
+  "version": 33,
+  "weekStart": ""
+}
